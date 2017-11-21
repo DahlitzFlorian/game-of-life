@@ -125,11 +125,8 @@ void evolution_step()
                     *tc = *c;
                     break;
                 case 3:
-                    if (*c)
-                        *tc = 1;
-                    else
-                        *tc = 0;
-                    break;
+                    *tc = 1;
+                     break;
                 default:
                     *tc = 0;
             }
