@@ -12,76 +12,156 @@ At each step in time, the following transitions occur:
    3. Any live cell with two or three live neighbours lives, unchanged, to the next generation.
    4. Any empty/dead cell with exactly three live neighbours cells will be populated with a living cell.
 
-The initial pattern constitutes the 'seed' of the system. The first generation is created by applying the above rules simultaneously to every cell in the seed — births and deaths happen simultaneously, and the discrete moment at which this happens is sometimes called a tick. (In other words, each generation is a pure function of the one before.)  The rules continue to be applied repeatedly to create further generations.
+The initial pattern constitutes the 'seed' of the system. The first generation is created by applying the above rules
+ simultaneously to every cell in the seed ï¿½ births and deaths happen simultaneously, and the discrete moment at which this
+ happens is sometimes called a tick. (In other words, each generation is a pure function of the one before.)
+ The rules continue to be applied repeatedly to create further generations.
 
 see: http://en.wikipedia.org/wiki/Conway's_Game_of_Life
 */
 
 
-// TO DO: Complete the programm such that it simulates the game of life. 
-//        Do this as teamwork (e.g. in teams with 2 or 3) 
+// TO DO: Complete the programm such that it simulates the game of life.
+//        Do this as teamwork (e.g. in teams with 2 or 3)
 //        and benefit from the fact the functions can developed separately and then integrated into the final program.
-// TO DO optional 1: extend the program, such that it detects 'stable states', i.e. the system is oscillating between a few states. 
+// TO DO optional 1: extend the program, such that it detects 'stable states', i.e. the system is oscillating between a few states.
 // TO DO optional 2: let the program find a start state such that the system stays alive and unstable for as long as possible
 // TO DO optional 3: Create a flicker-free output: Do not print each character separately, but write the output into a string, which is printed all at once
-// TO DO optional 4: extend the program such that the content of the cells can be edited by the user. 
+// TO DO optional 4: extend the program such that the content of the cells can be edited by the user.
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <locale.h>
+#include <time.h>
+
+#define XDIM 30
+#define YDIM 50
+
+#define DEAD  0
+#define ALIVE 1
 
 // Global 2-dim-array which contains the cells
-char cells[30][50];
+int cells[30][50];
 
-// TO DO: initialize cells, set most to 0, some to 1 
-void initialize_cells()
-{
-   int i, j;
-   for(i=0; i<30; i++) {
-	   for(j=0; j<50; j++) {
-		 // TO DO ...
-	   }
-   }
+
+void initialize_cells(void) {
+    srand(time(0));
+    for (int a = 0; a < XDIM; a++)
+        for (int b = 0; b < YDIM; b++)
+            cells[a][b] = rand() % 2;
+
 }
 
-// TO DO: Write output function to show the cells 
-void display_cells()
-{
+// TO DO: Write output function to show the cells
+void display_cells() {
+    system("clear");
 
-   system("CLS"); // Clear screen - works (at least) on windows console.
-   // TO DO
+    for (int x = 0; x < XDIM; x++) {
+        for (int y = 0; y < YDIM; y++) {
+            if (cells[x][y] != ALIVE) {
+                printf("%lc ", 0x2620);
+            } else {
+                printf("%lc", 0x1F607);
+            }
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
+int count_alive_cells(int x, int y) {
+    int count = 0;
+
+    if (y - 1 < YDIM && y - 1 > 0 && cells[x][y - 1] == ALIVE)
+        count++;
+
+
+    if (y + 1 < YDIM && cells[x][y + 1] == ALIVE)
+        count++;
+
+    if (x + 1 < XDIM) {
+        if (cells[x +1][y] == ALIVE)
+            count++;
+        if (y + 1 < YDIM && cells[x +1][y +1] == ALIVE)
+            count++;
+        if (y - 1 > 0 && cells[x +1][y -1] == ALIVE)
+            count++;
+    }
+
+    if (x -1 > 0) {
+        if (cells[x -1][y] == ALIVE)
+            count++;
+        if (y + 1 < YDIM && cells[x -1][y +1] == ALIVE)
+            count++;
+        if (y - 1 > 0 && cells[x -1][y -1] == ALIVE)
+            count++;
+    }
+
+    return count;
 }
 
 // TO DO: Write a function to calculate the next evolution step
 void evolution_step()
 {
-   // TO DO: Use this array for the calculation of the next step
-   char cells_helper[30][50];
-   
-  
+    int t_cells[XDIM][YDIM];
+    int * c;
+    int * tc;
+    for (int a = 0; a < XDIM; a++)
+        for (int b = 0; b < YDIM; b++)
+        {
+            c = &cells[a][b];
+            tc = &t_cells[a][b];
+            switch(count_alive_cells(a, b))
+            {
+                case 0:
+                case 1:
+                    *tc = 0;
+                    break;
+                case 2:
+                    *tc = *c;
+                    break;
+                case 3:
+                    if (*c)
+                        *tc = 1;
+                    else
+                        *tc = 0;
+                    break;
+                default:
+                    *tc = 0;
+            }
+        }
+
+    for (int a = 0; a < XDIM; a++)
+        for (int b = 0; b < YDIM; b++)
+            cells[a][b] = t_cells[a][b];
 }
 
 // TO DO: Write a function that counts the occupied cells
-int count_cells()
-{
+int count_cells() {
+    int count_alive = 0;
+    for (int x = 0; x < XDIM; x++)
+        for (int y = 0; y < YDIM; y++)
+            if (cells[x][y] == ALIVE)
+                count_alive++;
 
-   
+    return count_alive;
 }
 
 // Main program
-int main()
-{
-   initialize_cells();
+int main() {
+    setlocale(LC_ALL, "");
+    initialize_cells();
 
-   while(1) {
-      display_cells();
+    while(1) {
+        display_cells();
 
-      // Leave loop if there are no more occupied cells
-      if(count_cells()==0) 
-	     break;
-      
-      printf("Press enter");
-	  getchar();
+        // Leave loop if there are no more occupied cells
+        if (count_cells() == 0)
+            break;
 
-      evolution_step();
-   }
+        printf("Press enter");
+        getchar();
+
+        evolution_step();
+    }
 }
