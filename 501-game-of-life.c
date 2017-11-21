@@ -69,38 +69,17 @@ void display_cells() {
     printf("\n");
 }
 
-int count_alive_cells(int x, int y) {
-    int count = 0;
-    int i, j, a, b;
-    int k = x - 1;
-    int l = y - 1;
-
-    for(i = 0; i < 3; i++) {
-        for(j = 0; j < 3; j++) {
-            if(k < 0)
-                a = XDIM + k;
-            else if(k >= XDIM)
-                a = k - XDIM;
-            else
-                a = k;
-
-            if(l < 0)
-                b = YDIM + l;
-            else if(l >= YDIM)
-                b = l - YDIM;
-            else
-                b = l;
-
-            if((a != x) && (b != y)) {
-                if (cells[a][b] == ALIVE) {
-                    count++;
-                }
-            }
-            k++;
+int count_alive_cells(int x, int y)
+{
+    int count = 0, tx = 0, ty = 0;
+    for (int a = -1; a <= 1; a++)
+        for (int b = -1; b <= 1; b++)
+        {
+            tx = x+a < 0 ? XDIM-1 : (x+a>=XDIM ? 0 : x+a);
+            ty = y+b < 0 ? YDIM-1 : (y+b>=YDIM ? 0 : y+b);
+            if (a != 0 && b != 0) 
+                count += cells[tx][ty];
         }
-        l++;
-    }
-
     return count;
 }
 
