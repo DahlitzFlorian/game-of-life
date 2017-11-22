@@ -48,7 +48,7 @@ see: http://en.wikipedia.org/wiki/Conway's_Game_of_Life
 
 int count_alive_cells(const int *cells, int x, int y);
 void display_cells(const int *cells);
-void display_graph(int *, int, int, int, char[32])
+void display_graph(int *, int, int, int, char[32]);
 void evolution_step(int *cells);
 int count_all_alive_cells(const int *cells);
 void initialize_cells(int *cells);
