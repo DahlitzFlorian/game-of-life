@@ -41,7 +41,7 @@ see: http://en.wikipedia.org/wiki/Conway's_Game_of_Life
 #define DEAD  0
 #define ALIVE 1
 
-#define TRUE 1
+#define TRUE  1
 #define FALSE 0
 
 #define HISTORY_SIZE 5
