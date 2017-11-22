@@ -48,6 +48,11 @@ see: http://en.wikipedia.org/wiki/Conway's_Game_of_Life
 #define DIFFERENCE_HISTORY_SIZE 52
 #define GRAPH_LINES 11
 
+/*
+ * --------------------------------------------------------
+ * prototypes
+ * --------------------------------------------------------
+ */
 int count_alive_cells(const int *cells, int x, int y);
 void display_cells(const int *cells);
 void display_graph(const int *, int, int, int, char[64]);
@@ -57,6 +62,11 @@ void initialize_cells(int *cells);
 void copy(const int *source, int *target, int offset, int size);
 int equals(const int *state_a, const int *state_b);
 
+/*
+ * --------------------------------------------------------
+ * start of the main-function
+ * --------------------------------------------------------
+ */
 int main() {
     setlocale(LC_ALL, "");
 
@@ -143,11 +153,21 @@ int main() {
     }
 }
 
+/*
+ * --------------------------------------------------------
+ * copies a whole state to a given source
+ * --------------------------------------------------------
+ */
 void copy(const int *source, int *target, int offset, int size) {
 	for (int x = 0; x < size; x++)
 		*(target + offset + x) = *(source + x);
 }
 
+/*
+ * --------------------------------------------------------
+ * compares two states / successive states
+ * --------------------------------------------------------
+ */
 int equals(const int *state_a, const int *state_b) {
     for (int x = 0; x < XDIM * YDIM; x++)
         if (*(state_a + x) != *(state_b + x))
@@ -155,6 +175,11 @@ int equals(const int *state_a, const int *state_b) {
     return TRUE;
 }
 
+/*
+ * --------------------------------------------------------
+ * creates the cells randomly
+ * --------------------------------------------------------
+ */
 void initialize_cells(int *cells) {
     srand(time(0));
 
@@ -163,6 +188,11 @@ void initialize_cells(int *cells) {
             *(cells + a * YDIM + b) = rand() % 2;
 }
 
+/*
+ * --------------------------------------------------------
+ * displays the cells on the screen
+ * --------------------------------------------------------
+ */
 void display_cells(const int *cells) {
 	system("clear");
 
@@ -179,6 +209,12 @@ void display_cells(const int *cells) {
     printf("\n");
 }
 
+/*
+ * --------------------------------------------------------
+ * displays a graph revealing the alive cells difference
+ * between the current step and the previous one
+ * --------------------------------------------------------
+ */
 void display_graph(const int * p, int dim, int lines, int bottom_border, char caption[64]) {
 	char line[dim];
 	printf("\n::: %s :::\n", caption);
@@ -209,6 +245,11 @@ void display_graph(const int * p, int dim, int lines, int bottom_border, char ca
 	printf("--------\n");
 }
 
+/*
+ * --------------------------------------------------------
+ * returns the number of living cells around a given one
+ * --------------------------------------------------------
+ */
 int count_alive_cells(const int *cells, int x, int y) {
     int count = 0, tx = 0, ty = 0;
     for (int a = -1; a <= 1; a++)
@@ -221,6 +262,11 @@ int count_alive_cells(const int *cells, int x, int y) {
     return count;
 }
 
+/*
+ * --------------------------------------------------------
+ * goes one evolution step forward based on the set rules
+ * --------------------------------------------------------
+ */
 void evolution_step(int *cells) {
     int t_cells[XDIM][YDIM];
     int * c;
@@ -250,6 +296,11 @@ void evolution_step(int *cells) {
             *(cells + a * YDIM + b) = t_cells[a][b];
 }
 
+/*
+ * --------------------------------------------------------
+ * counts all alive cells existing in the field
+ * --------------------------------------------------------
+ */
 int count_all_alive_cells(const int *cells) {
     int count_alive = 0;
     for (int x = 0; x < XDIM; x++)
