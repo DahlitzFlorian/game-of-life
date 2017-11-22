@@ -41,51 +41,73 @@ see: http://en.wikipedia.org/wiki/Conway's_Game_of_Life
 #define DEAD  0
 #define ALIVE 1
 
-int count_alive_cells(int x, int y);
-void display_cells();
-void evolution_step();
-int count_all_alive_cells();
-void initialize_cells();
+#define HISTORY_SIZE 5
 
-int cells[XDIM][YDIM];
-int generation = 1;
+int count_alive_cells(const int *cells, int x, int y);
+void display_cells(const int *cells);
+void evolution_step(int *cells);
+int count_all_alive_cells(const int *cells);
+void initialize_cells(int *cells);
+void copy(const int *source, int *target, int offset, int size);
 
 int main() {
     setlocale(LC_ALL, "");
-    initialize_cells();
+
+	int history[HISTORY_SIZE][XDIM][YDIM] = {};
+	int cells[XDIM][YDIM] = {};
+	int generation = 1;
+
+    initialize_cells((int *) &cells);
 
     while(1) {
-        display_cells();
+        display_cells((int *) &cells);
 
-        printf("Anzahl lebender Zellen: %4d\n", count_all_alive_cells());
-        printf("Generation %5d\n", generation);
+	    copy((int *) &cells, (int *) &history, (generation - 1) % HISTORY_SIZE * HISTORY_SIZE + XDIM * YDIM, XDIM * YDIM);
 
-        // Leave loop if there are no more occupied cells
-        if (count_all_alive_cells() == 0)
+        printf("Anzahl lebender Zellen: %4d\n", count_all_alive_cells((int *) &cells));
+        printf("Generation: %5d\n", generation);
+
+	    if (generation > 1) {
+		    int last_generation[XDIM][YDIM] = {};
+
+		    copy((int *) &(history) + (generation - 2) % HISTORY_SIZE * HISTORY_SIZE + XDIM * YDIM, (int *) &last_generation, 0, XDIM * YDIM);
+
+		    int difference = count_all_alive_cells((int *) &last_generation) - count_all_alive_cells((int *) &cells);
+
+		    printf("Unterschied zur letzten Generation: %5d\n", difference);
+	    }
+
+
+        if (count_all_alive_cells((int *) &cells) == 0)
             break;
 
         usleep(100000);
 
 
-        evolution_step();
+        evolution_step((int *) &cells);
         generation++;
     }
 }
 
-void initialize_cells() {
+void copy(const int *source, int *target, int offset, int size) {
+	for (int x = 0; x < size; x++)
+		*(target + offset + x) = *(source + x);
+}
+
+void initialize_cells(int *cells) {
     srand(time(0));
 
     for (int a = 0; a < XDIM; a++)
         for (int b = 0; b < YDIM; b++)
-            cells[a][b] = rand() % 2;
+            *(cells + a * YDIM + b) = rand() % 2;
 }
 
-void display_cells() {
+void display_cells(const int *cells) {
 	system("clear");
 
     for (int x = 0; x < XDIM; x++) {
         for (int y = 0; y < YDIM; y++) {
-            if (cells[x][y] == ALIVE) {
+            if (*(cells + x * YDIM + y)== ALIVE) {
                 printf("%lc", 0x1F47B);
             } else {
                 printf(" .");
@@ -96,27 +118,27 @@ void display_cells() {
     printf("\n");
 }
 
-int count_alive_cells(int x, int y) {
+int count_alive_cells(const int *cells, int x, int y) {
     int count = 0, tx = 0, ty = 0;
     for (int a = -1; a <= 1; a++)
         for (int b = -1; b <= 1; b++) {
             tx = x+a < 0 ? XDIM-1 : (x+a >= XDIM ? 0 : x+a);
             ty = y+b < 0 ? YDIM-1 : (y+b >= YDIM ? 0 : y+b);
             if (!(a == 0 && b == 0))
-                count += cells[tx][ty];
+	            count += *(cells + tx * YDIM + ty);
         }
     return count;
 }
 
-void evolution_step() {
+void evolution_step(int *cells) {
     int t_cells[XDIM][YDIM];
     int * c;
     int * tc;
     for (int a = 0; a < XDIM; a++)
         for (int b = 0; b < YDIM; b++) {
-            c = &cells[a][b];
+            c = cells + a * YDIM + b;
             tc = &t_cells[a][b];
-            switch(count_alive_cells(a, b)) {
+            switch(count_alive_cells(cells, a, b)) {
                 case 0:
                 case 1:
                     *tc = DEAD;
@@ -134,14 +156,14 @@ void evolution_step() {
 
     for (int a = 0; a < XDIM; a++)
         for (int b = 0; b < YDIM; b++)
-            cells[a][b] = t_cells[a][b];
+            *(cells + a * YDIM + b) = t_cells[a][b];
 }
 
-int count_all_alive_cells() {
+int count_all_alive_cells(const int *cells) {
     int count_alive = 0;
     for (int x = 0; x < XDIM; x++)
         for (int y = 0; y < YDIM; y++)
-            if (cells[x][y] == ALIVE)
+            if (*(cells + x * YDIM + y) == ALIVE)
                 count_alive++;
 
     return count_alive;
