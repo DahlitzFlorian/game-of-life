@@ -41,6 +41,9 @@ see: http://en.wikipedia.org/wiki/Conway's_Game_of_Life
 #define DEAD  0
 #define ALIVE 1
 
+#define TRUE 1
+#define FALSE 0
+
 #define HISTORY_SIZE 5
 
 int count_alive_cells(const int *cells, int x, int y);
@@ -49,6 +52,7 @@ void evolution_step(int *cells);
 int count_all_alive_cells(const int *cells);
 void initialize_cells(int *cells);
 void copy(const int *source, int *target, int offset, int size);
+int equals(const int *state_a, const int *state_b);
 
 int main() {
     setlocale(LC_ALL, "");
@@ -56,13 +60,15 @@ int main() {
 	int history[HISTORY_SIZE][XDIM][YDIM] = {};
 	int cells[XDIM][YDIM] = {};
 	int generation = 1;
+    int oscillating_after = 0;
+    int oscillating_steps = 0;
+    int oscillating = FALSE;
 
     initialize_cells((int *) &cells);
 
     while(1) {
         display_cells((int *) &cells);
 
-	    copy((int *) &cells, (int *) &history, (generation - 1) % HISTORY_SIZE * HISTORY_SIZE + XDIM * YDIM, XDIM * YDIM);
 
         printf("Anzahl lebender Zellen: %4d\n", count_all_alive_cells((int *) &cells));
         printf("Generation: %5d\n", generation);
@@ -70,11 +76,36 @@ int main() {
 	    if (generation > 1) {
 		    int last_generation[XDIM][YDIM] = {};
 
-		    copy((int *) &(history) + (generation - 2) % HISTORY_SIZE * HISTORY_SIZE + XDIM * YDIM, (int *) &last_generation, 0, XDIM * YDIM);
+		    copy((int *) &(history) + (HISTORY_SIZE - 1) * XDIM * YDIM, (int *) &last_generation, 0, XDIM * YDIM);
 
 		    int difference = count_all_alive_cells((int *) &last_generation) - count_all_alive_cells((int *) &cells);
 
 		    printf("Unterschied zur letzten Generation: %5d\n", difference);
+
+
+            if (!oscillating) {
+                for (int x = 0; x < HISTORY_SIZE - 1; x++) {
+                    copy((int *) &(history) + (HISTORY_SIZE - 1 - x) * XDIM * YDIM, (int *) &last_generation, 0,
+                         XDIM * YDIM);
+
+                    if (equals((int *) &last_generation, (int *) &cells)) {
+                        oscillating = TRUE;
+                        oscillating_steps = x;
+                        oscillating_after = generation;
+                        break;
+                    }
+                }
+            }
+
+            if (oscillating) {
+                char *steps = malloc(5 * sizeof(char));
+                sprintf(steps, "mit %d", oscillating_steps);
+
+                printf("Funktion osziliert %s Schritt%s nach %d Generationen\n",
+                       oscillating_steps == 1 ?  "mit einem" : oscillating_steps == 0 ? "ohne" : steps,
+                       oscillating_steps > 1 ? "en" : "", oscillating_after);
+            }
+
 	    }
 
 
@@ -83,6 +114,10 @@ int main() {
 
         usleep(100000);
 
+        for (int x = 1; x < HISTORY_SIZE; x++)
+            copy((int *) &history + x * XDIM * YDIM, (int *) &history, (x -1) * XDIM * YDIM, XDIM * YDIM);
+
+        copy((int *) &cells, (int *) &history, (HISTORY_SIZE -1) * XDIM * YDIM, XDIM * YDIM);
 
         evolution_step((int *) &cells);
         generation++;
@@ -92,6 +127,13 @@ int main() {
 void copy(const int *source, int *target, int offset, int size) {
 	for (int x = 0; x < size; x++)
 		*(target + offset + x) = *(source + x);
+}
+
+int equals(const int *state_a, const int *state_b) {
+    for (int x = 0; x < XDIM * YDIM; x++)
+        if (*(state_a + x) != *(state_b + x))
+            return FALSE;
+    return TRUE;
 }
 
 void initialize_cells(int *cells) {
