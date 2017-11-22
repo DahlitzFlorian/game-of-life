@@ -12,7 +12,7 @@ It was / is being developed as a project in university during programming classe
 Participating members are at the moment
   - Florian Dahlitz (https://github.com/DahlitzFlorian/ | @DahlitzFlorian)
   - Patrick Hähn (https://github.com/haehnpt/ | @haehnpt)
-  - Sebastian Schmitt (https://github.com/sebschmitt/ | @seb_schmitt)
+  - Sebastian Schmitt (https://github.com/sebschmitt/ | @sebschmitt_)
 
 ## Links
 
