@@ -10,7 +10,7 @@ game of life thought of by mathematician Conway.
 It was / is being developed as a project in university during programming classes.
 
 Participating members are at the moment
-  - Florian Dahlitz (https://github.com/DahlitzFlorian/ | @DahlitzFlorian)
+  - Florian Dahlitz (https://github.com/DahlitzFlorian/ | @DahlitzF)
   - Patrick Hähn (https://github.com/haehnpt/ | @haehnpt)
   - Sebastian Schmitt (https://github.com/sebschmitt/ | @sebschmitt_)
 
