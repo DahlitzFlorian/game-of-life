@@ -90,6 +90,7 @@ int main() {
         printf("Anzahl lebender Zellen: %4d\n", count_all_alive_cells((int *) &cells));
         printf("Generation: %5d\n", generation);
 
+        // generating generation statistics
 	    if (generation > 1) {
 		    int last_generation[XDIM][YDIM] = {};
 
@@ -124,6 +125,7 @@ int main() {
                 }
             }
 
+            // display oscilliating data
             if (oscillating) {
                 char *steps = malloc(5 * sizeof(char));
                 sprintf(steps, "mit %d", oscillating_steps);
@@ -141,6 +143,7 @@ int main() {
         if (count_all_alive_cells((int *) &cells) == 0)
             break;
 
+        // set application asleep to see the progress
         usleep(100000);
 
         for (int x = 1; x < HISTORY_SIZE; x++)
