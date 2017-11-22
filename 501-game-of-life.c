@@ -158,7 +158,7 @@ int main() {
 
 /*
  * --------------------------------------------------------
- * copies a whole state to a given source
+ * copies a whole state to a given target
  * --------------------------------------------------------
  */
 void copy(const int *source, int *target, int offset, int size) {
