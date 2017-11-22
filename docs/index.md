@@ -16,4 +16,4 @@ Participating members are at the moment
 
 ## Links
 
-https://en.wikipedia.org/wiki/Conway's_Game_of_Life
+[https://en.wikipedia.org/wiki/Conway's_Game_of_Life](https://en.wikipedia.org/wiki/Conway's_Game_of_Life)
