@@ -18,6 +18,16 @@ Participating members are at the moment
 
 ![A screenshot of the application running in console](https://raw.githubusercontent.com/DahlitzFlorian/game-of-life/master/screen.png)
 
+## GIFs
+
+### An unstable, not oscillating state
+
+![A GIF of the application running in console](https://raw.githubusercontent.com/DahlitzFlorian/game-of-life/master/gif_2.gif)
+
+### An oscillating state
+
+![A GIF of the application running in console](https://raw.githubusercontent.com/DahlitzFlorian/game-of-life/master/gif_1.gif)
+
 ## Links
 
 https://en.wikipedia.org/wiki/Conway's_Game_of_Life
