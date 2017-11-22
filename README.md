@@ -10,9 +10,9 @@ game of life thought of by mathematician Conway.
 It was / is being developed as a project in university during programming classes.
 
 Participating members are at the moment
-  - Florian Dahlitz (@DahlitzFlorian)
-  - Patrick Hähn (@haehnpt)
-  - Sebastian Schmitt (@sebschmitt)
+  - Florian Dahlitz (https://github.com/DahlitzFlorian/)
+  - Patrick Hähn (https://github.com/haehnpt/)
+  - Sebastian Schmitt (https://github.com/sebschmitt/)
 
 ## Links
 
