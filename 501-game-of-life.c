@@ -45,10 +45,11 @@ see: http://en.wikipedia.org/wiki/Conway's_Game_of_Life
 #define FALSE 0
 
 #define HISTORY_SIZE 5
+#define DIFFERENCE_HISTORY_SIZE 31
 
 int count_alive_cells(const int *cells, int x, int y);
 void display_cells(const int *cells);
-void display_graph(int *, int, int, int, char[32])
+void display_graph(int *, int, int, int, char[32]);
 void evolution_step(int *cells);
 int count_all_alive_cells(const int *cells);
 void initialize_cells(int *cells);
@@ -60,6 +61,7 @@ int main() {
 
 	int history[HISTORY_SIZE][XDIM][YDIM] = {};
 	int cells[XDIM][YDIM] = {};
+	int difference_history[DIFFERENCE_HISTORY_SIZE];
 	int generation = 1;
     int oscillating_after = 0;
     int oscillating_steps = 0;
@@ -80,6 +82,12 @@ int main() {
 		    copy((int *) &(history) + (HISTORY_SIZE - 1) * XDIM * YDIM, (int *) &last_generation, 0, XDIM * YDIM);
 
 		    int difference = count_all_alive_cells((int *) &last_generation) - count_all_alive_cells((int *) &cells);
+
+
+		    for (int x = 1; x < DIFFERENCE_HISTORY_SIZE; x++)
+			    copy((int *) &difference_history + x, (int *) &difference_history, x -1, 1);
+
+		    *((int*) &difference_history + DIFFERENCE_HISTORY_SIZE -1) = difference;
 
 		    printf("Unterschied zur letzten Generation: %5d\n", difference);
 
@@ -106,8 +114,9 @@ int main() {
                        oscillating_steps == 1 ?  "mit einem" : oscillating_steps == 0 ? "ohne" : steps,
                        oscillating_steps > 1 ? "en" : "", oscillating_after);
             }
-
 	    }
+
+	    display_graph(difference_history, DIFFERENCE_HISTORY_SIZE, 11, -5, "Entwicklung");
 
 
         if (count_all_alive_cells((int *) &cells) == 0)
@@ -161,8 +170,7 @@ void display_cells(const int *cells) {
     printf("\n");
 }
 
-void display_graph(int * p, int dim, int lines, int bottom_border, char caption[32])
-{
+void display_graph(int * p, int dim, int lines, int bottom_border, char caption[32]) {
 	char line[dim];
 	printf("\n::: %s :::\n", caption);
 	for(int d = 0; d < dim; d++)
