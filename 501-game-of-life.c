@@ -48,6 +48,7 @@ see: http://en.wikipedia.org/wiki/Conway's_Game_of_Life
 
 int count_alive_cells(const int *cells, int x, int y);
 void display_cells(const int *cells);
+void display_graph(int *, int, int, int, char[32])
 void evolution_step(int *cells);
 int count_all_alive_cells(const int *cells);
 void initialize_cells(int *cells);
@@ -158,6 +159,35 @@ void display_cells(const int *cells) {
         printf("\n");
     }
     printf("\n");
+}
+
+void display_graph(int * p, int dim, int lines, int bottom_border, char caption[32])
+{
+	char line[dim];
+	printf("\n::: %s :::\n", caption);
+	for(int d = 0; d < dim; d++)
+		for (int g = 0; g < 3; g++) 
+			printf("-");
+	printf("--------\n");
+	for (int a = lines - 1; a >= 0; a--)
+	{
+		printf("%4d :: ", bottom_border+a);
+		for (int b = 0; b < dim; b++)
+		{
+			if (*(p+b) == bottom_border + a)
+				*(line+b) = 'x';
+			else
+				*(line+b) = ' ';
+		}
+		for(int d = 0; d < dim; d++)
+			for (int g = 0; g < 3; g++) 
+				printf("%c", *(line+d));
+		printf("\n");
+	}
+	for(int d = 0; d < dim; d++)
+		for (int g = 0; g < 3; g++) 
+			printf("-");
+	printf("--------\n");
 }
 
 int count_alive_cells(const int *cells, int x, int y) {
