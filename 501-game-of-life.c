@@ -66,7 +66,7 @@ int main() {
 
     initialize_cells((int *) &cells);
 
-    while(1) {
+    while(TRUE) {
         display_cells((int *) &cells);
 
 
