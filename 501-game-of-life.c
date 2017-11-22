@@ -36,7 +36,7 @@ see: http://en.wikipedia.org/wiki/Conway's_Game_of_Life
 #include <unistd.h>
 
 #define XDIM 30
-#define YDIM 50
+#define YDIM 85
 
 #define DEAD  0
 #define ALIVE 1
@@ -45,9 +45,12 @@ see: http://en.wikipedia.org/wiki/Conway's_Game_of_Life
 #define FALSE 0
 
 #define HISTORY_SIZE 5
+#define DIFFERENCE_HISTORY_SIZE 52
+#define GRAPH_LINES 11
 
 int count_alive_cells(const int *cells, int x, int y);
 void display_cells(const int *cells);
+void display_graph(const int *, int, int, int, char[64]);
 void evolution_step(int *cells);
 int count_all_alive_cells(const int *cells);
 void initialize_cells(int *cells);
@@ -59,14 +62,18 @@ int main() {
 
 	int history[HISTORY_SIZE][XDIM][YDIM] = {};
 	int cells[XDIM][YDIM] = {};
+	int difference_history[DIFFERENCE_HISTORY_SIZE];
 	int generation = 1;
     int oscillating_after = 0;
     int oscillating_steps = 0;
     int oscillating = FALSE;
 
+	for (int x = 0; x < DIFFERENCE_HISTORY_SIZE; x++)
+		*(difference_history + x) = GRAPH_LINES + 1;
+
     initialize_cells((int *) &cells);
 
-    while(1) {
+    while(TRUE) {
         display_cells((int *) &cells);
 
 
@@ -79,6 +86,16 @@ int main() {
 		    copy((int *) &(history) + (HISTORY_SIZE - 1) * XDIM * YDIM, (int *) &last_generation, 0, XDIM * YDIM);
 
 		    int difference = count_all_alive_cells((int *) &last_generation) - count_all_alive_cells((int *) &cells);
+
+		    if (generation < DIFFERENCE_HISTORY_SIZE)
+			    *((int *) &difference_history + generation - 1) = difference;
+		    else {
+			    for (int x = 1; x < DIFFERENCE_HISTORY_SIZE; x++)
+				    copy((int *) &difference_history + x, (int *) &difference_history, x - 1, 1);
+
+			    *((int *) &difference_history + DIFFERENCE_HISTORY_SIZE - 1) = difference;
+		    }
+
 
 		    printf("Unterschied zur letzten Generation: %5d\n", difference);
 
@@ -101,12 +118,14 @@ int main() {
                 char *steps = malloc(5 * sizeof(char));
                 sprintf(steps, "mit %d", oscillating_steps);
 
-                printf("Funktion osziliert %s Schritt%s nach %d Generationen\n",
+                printf("Zustand osziliert %s Schritt%s nach %d Generationen\n",
                        oscillating_steps == 1 ?  "mit einem" : oscillating_steps == 0 ? "ohne" : steps,
                        oscillating_steps > 1 ? "en" : "", oscillating_after);
-            }
-
+            } else
+	            printf("\n");
 	    }
+
+	    display_graph(difference_history, DIFFERENCE_HISTORY_SIZE, GRAPH_LINES, -5, "Entwicklung der absoluten Anzahl der lebenden Zellen");
 
 
         if (count_all_alive_cells((int *) &cells) == 0)
@@ -158,6 +177,36 @@ void display_cells(const int *cells) {
         printf("\n");
     }
     printf("\n");
+}
+
+void display_graph(const int * p, int dim, int lines, int bottom_border, char caption[64]) {
+	char line[dim];
+	printf("\n::: %s :::\n", caption);
+	for(int d = 0; d < dim; d++)
+		for (int g = 0; g < 3; g++) 
+			printf("-");
+	printf("--------\n");
+	for (int a = lines - 1; a >= 0; a--)
+	{
+		printf("%4d :: ", bottom_border+a);
+		for (int b = 0; b < dim; b++)
+		{
+			if (*(p+b) == bottom_border + a)
+				*(line+b) = 'x';
+			else if (bottom_border + a == 0)
+				*(line + b) = '-';
+			else
+				*(line+b) = ' ';
+		}
+		for(int d = 0; d < dim; d++)
+			for (int g = 0; g < 3; g++) 
+				printf("%c", *(line+d));
+		printf("\n");
+	}
+	for(int d = 0; d < dim; d++)
+		for (int g = 0; g < 3; g++) 
+			printf("-");
+	printf("--------\n");
 }
 
 int count_alive_cells(const int *cells, int x, int y) {
