@@ -36,7 +36,7 @@ see: http://en.wikipedia.org/wiki/Conway's_Game_of_Life
 #include <unistd.h>
 
 #define XDIM 30
-#define YDIM 50
+#define YDIM 85
 
 #define DEAD  0
 #define ALIVE 1
@@ -45,11 +45,11 @@ see: http://en.wikipedia.org/wiki/Conway's_Game_of_Life
 #define FALSE 0
 
 #define HISTORY_SIZE 5
-#define DIFFERENCE_HISTORY_SIZE 31
+#define DIFFERENCE_HISTORY_SIZE 52
 
 int count_alive_cells(const int *cells, int x, int y);
 void display_cells(const int *cells);
-void display_graph(int *, int, int, int, char[32]);
+void display_graph(int *, int, int, int, char[64]);
 void evolution_step(int *cells);
 int count_all_alive_cells(const int *cells);
 void initialize_cells(int *cells);
@@ -110,13 +110,13 @@ int main() {
                 char *steps = malloc(5 * sizeof(char));
                 sprintf(steps, "mit %d", oscillating_steps);
 
-                printf("Funktion osziliert %s Schritt%s nach %d Generationen\n",
+                printf("Zustand osziliert %s Schritt%s nach %d Generationen\n",
                        oscillating_steps == 1 ?  "mit einem" : oscillating_steps == 0 ? "ohne" : steps,
                        oscillating_steps > 1 ? "en" : "", oscillating_after);
             }
 	    }
 
-	    display_graph(difference_history, DIFFERENCE_HISTORY_SIZE, 11, -5, "Entwicklung");
+	    display_graph(difference_history, DIFFERENCE_HISTORY_SIZE, 11, -5, "Entwicklung der absoluten Anzahl der lebenden Zellen");
 
 
         if (count_all_alive_cells((int *) &cells) == 0)
@@ -170,7 +170,7 @@ void display_cells(const int *cells) {
     printf("\n");
 }
 
-void display_graph(int * p, int dim, int lines, int bottom_border, char caption[32]) {
+void display_graph(int * p, int dim, int lines, int bottom_border, char caption[64]) {
 	char line[dim];
 	printf("\n::: %s :::\n", caption);
 	for(int d = 0; d < dim; d++)
