@@ -13,6 +13,10 @@ Participating members are at the moment
   - Florian Dahlitz (https://github.com/DahlitzFlorian/ | @DahlitzF)
   - Patrick Hähn (https://github.com/haehnpt/ | @haehnpt)
   - Sebastian Schmitt (https://github.com/sebschmitt/ | @sebschmitt_)
+  
+## Screenshot
+
+![A screenshot of the application running in console](https://raw.githubusercontent.com/DahlitzFlorian/game-of-life/master/screen.png)
 
 ## Links
 
