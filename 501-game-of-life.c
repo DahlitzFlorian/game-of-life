@@ -217,11 +217,15 @@ void display_cells(const int *cells) {
  */
 void display_graph(const int * p, int dim, int lines, int bottom_border, char caption[64]) {
 	char line[dim];
+
+    // print caption
 	printf("\n::: %s :::\n", caption);
 	for(int d = 0; d < dim; d++)
 		for (int g = 0; g < 3; g++) 
 			printf("-");
 	printf("--------\n");
+
+    // print the graph based on data
 	for (int a = lines - 1; a >= 0; a--)
 	{
 		printf("%4d :: ", bottom_border+a);
@@ -275,6 +279,8 @@ void evolution_step(int *cells) {
         for (int b = 0; b < YDIM; b++) {
             c = cells + a * YDIM + b;
             tc = &t_cells[a][b];
+
+            // apply game rules
             switch(count_alive_cells(cells, a, b)) {
                 case 0:
                 case 1:
