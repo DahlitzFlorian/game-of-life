@@ -33,6 +33,7 @@ see: http://en.wikipedia.org/wiki/Conway's_Game_of_Life
 #include <stdlib.h>
 #include <locale.h>
 #include <time.h>
+#include <unistd.h>
 
 #define XDIM 30
 #define YDIM 50
@@ -40,28 +41,54 @@ see: http://en.wikipedia.org/wiki/Conway's_Game_of_Life
 #define DEAD  0
 #define ALIVE 1
 
-// Global 2-dim-array which contains the cells
-int cells[30][50];
+int count_alive_cells(int x, int y);
+void display_cells();
+void evolution_step();
+int count_all_alive_cells();
+void initialize_cells();
+
+int cells[XDIM][YDIM];
+int generation = 1;
+
+int main() {
+    setlocale(LC_ALL, "");
+    initialize_cells();
+
+    while(1) {
+        display_cells();
+
+        printf("Anzahl lebender Zellen: %4d\n", count_all_alive_cells());
+        printf("Generation %5d\n", generation);
+
+        // Leave loop if there are no more occupied cells
+        if (count_all_alive_cells() == 0)
+            break;
+
+        usleep(100000);
 
 
-void initialize_cells(void) {
+        evolution_step();
+        generation++;
+    }
+}
+
+void initialize_cells() {
     srand(time(0));
+
     for (int a = 0; a < XDIM; a++)
         for (int b = 0; b < YDIM; b++)
             cells[a][b] = rand() % 2;
-
 }
 
-// TO DO: Write output function to show the cells
 void display_cells() {
-    system("clear");
+	system("clear");
 
     for (int x = 0; x < XDIM; x++) {
         for (int y = 0; y < YDIM; y++) {
-            if (cells[x][y] != ALIVE) {
-                printf("%lc ", 0x2620);
+            if (cells[x][y] == ALIVE) {
+                printf("%lc", 0x1F47B);
             } else {
-                printf("%lc", 0x1F607);
+                printf(" .");
             }
         }
         printf("\n");
@@ -69,45 +96,39 @@ void display_cells() {
     printf("\n");
 }
 
-int count_alive_cells(int x, int y)
-{
+int count_alive_cells(int x, int y) {
     int count = 0, tx = 0, ty = 0;
     for (int a = -1; a <= 1; a++)
-        for (int b = -1; b <= 1; b++)
-        {
-            tx = x+a < 0 ? XDIM-1 : (x+a>=XDIM ? 0 : x+a);
-            ty = y+b < 0 ? YDIM-1 : (y+b>=YDIM ? 0 : y+b);
-            if (a != 0 && b != 0) 
+        for (int b = -1; b <= 1; b++) {
+            tx = x+a < 0 ? XDIM-1 : (x+a >= XDIM ? 0 : x+a);
+            ty = y+b < 0 ? YDIM-1 : (y+b >= YDIM ? 0 : y+b);
+            if (!(a == 0 && b == 0))
                 count += cells[tx][ty];
         }
     return count;
 }
 
-// TO DO: Write a function to calculate the next evolution step
-void evolution_step()
-{
+void evolution_step() {
     int t_cells[XDIM][YDIM];
     int * c;
     int * tc;
     for (int a = 0; a < XDIM; a++)
-        for (int b = 0; b < YDIM; b++)
-        {
+        for (int b = 0; b < YDIM; b++) {
             c = &cells[a][b];
             tc = &t_cells[a][b];
-            switch(count_alive_cells(a, b))
-            {
+            switch(count_alive_cells(a, b)) {
                 case 0:
                 case 1:
-                    *tc = 0;
+                    *tc = DEAD;
                     break;
                 case 2:
                     *tc = *c;
                     break;
                 case 3:
-                    *tc = 1;
+                    *tc = ALIVE;
                      break;
                 default:
-                    *tc = 0;
+                    *tc = DEAD;
             }
         }
 
@@ -116,8 +137,7 @@ void evolution_step()
             cells[a][b] = t_cells[a][b];
 }
 
-// TO DO: Write a function that counts the occupied cells
-int count_cells() {
+int count_all_alive_cells() {
     int count_alive = 0;
     for (int x = 0; x < XDIM; x++)
         for (int y = 0; y < YDIM; y++)
@@ -125,23 +145,4 @@ int count_cells() {
                 count_alive++;
 
     return count_alive;
-}
-
-// Main program
-int main() {
-    setlocale(LC_ALL, "");
-    initialize_cells();
-
-    while(1) {
-        display_cells();
-
-        // Leave loop if there are no more occupied cells
-        if (count_cells() == 0)
-            break;
-
-        printf("Press enter");
-        getchar();
-
-        evolution_step();
-    }
 }
