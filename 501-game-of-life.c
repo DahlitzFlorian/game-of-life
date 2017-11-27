@@ -68,7 +68,7 @@ int equals(const int *state_a, const int *state_b);
  * start of the main-function
  * --------------------------------------------------------
  */
-int main() {
+int main(int argc, char * argv[]) {
     setlocale(LC_ALL, "");
 
 	int history[HISTORY_SIZE][XDIM][YDIM] = {};
@@ -82,7 +82,10 @@ int main() {
 	for (int x = 0; x < DIFFERENCE_HISTORY_SIZE; x++)
 		*(difference_history + x) = GRAPH_LINES + 1;
 
-    initialize_cells((int *) &cells);
+    if (argc > 1)
+	get_user_input((int *) cells, argv[1], XDIM*YDIM);
+    else
+	initialize_cells((int *) &cells);
 
     while(TRUE) {
         display_cells((int *) &cells);
