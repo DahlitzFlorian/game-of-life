@@ -61,6 +61,7 @@ int count_all_alive_cells(const int *cells);
 void initialize_cells(int *cells);
 void copy(const int *source, int *target, int offset, int size);
 int equals(const int *state_a, const int *state_b);
+unsigned long hash(int ***str);
 
 /*
  * --------------------------------------------------------
@@ -83,7 +84,8 @@ int main() {
 
     initialize_cells((int *) &cells);
 
-    while(TRUE) {
+    int a = TRUE;
+    while(a) {
         display_cells((int *) &cells);
 
 
@@ -135,6 +137,8 @@ int main() {
                        oscillating_steps > 1 ? "en" : "", oscillating_after);
             } else
 	            printf("\n");
+            printf("%lu", hash((int***)cells));
+            a = FALSE;
 	    }
 
 	    display_graph(difference_history, DIFFERENCE_HISTORY_SIZE, GRAPH_LINES, -5, "Entwicklung der absoluten Anzahl der lebenden Zellen");
@@ -318,4 +322,21 @@ int count_all_alive_cells(const int *cells) {
                 count_alive++;
 
     return count_alive;
+}
+
+/*
+ * --------------------------------------------------------
+ * hashes the states
+ * --------------------------------------------------------
+ */
+unsigned long hash(int ***str) {
+    unsigned long hash = 5381;
+    int c = ***str++;
+
+    while (c) {
+        hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+        c = ***str++;
+    }
+
+    return hash;
 }
