@@ -53,7 +53,7 @@ see: http://en.wikipedia.org/wiki/Conway's_Game_of_Life
  * prototypes
  * --------------------------------------------------------
  */
-void get_user_input(int * cells, const char* path, int max)
+void get_user_input(int * cells, const char* path, int max);
 int count_alive_cells(const int *cells, int x, int y);
 void display_cells(const int *cells);
 void display_graph(const int *, int, int, int, char[64]);
