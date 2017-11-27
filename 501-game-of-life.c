@@ -53,6 +53,7 @@ see: http://en.wikipedia.org/wiki/Conway's_Game_of_Life
  * prototypes
  * --------------------------------------------------------
  */
+void get_user_input(int * cells, const char* path, int max)
 int count_alive_cells(const int *cells, int x, int y);
 void display_cells(const int *cells);
 void display_graph(const int *, int, int, int, char[64]);
@@ -154,6 +155,32 @@ int main() {
         evolution_step((int *) &cells);
         generation++;
     }
+}
+
+/*
+ * --------------------------------------------------------
+ * gets a set of 0s and 1s from a .txt-file
+ * --------------------------------------------------------
+ */
+void get_user_input(int * cells, const char* path, int max)
+{
+	FILE * f;
+	int c, t = 0;
+	f = fopen(path, "r");
+	while (((c = fgetc(f)) != EOF) && t < max)
+	{
+		if (c == 48)
+		{
+			*(cells + t) = 0;
+			t++;
+		}
+		if (c == 49)
+		{
+			*(cells + t) = 1;
+			t++;
+		}
+	}
+	fclose(f);
 }
 
 /*
