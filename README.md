@@ -14,6 +14,14 @@ Participating members are at the moment
   - Patrick Hähn (https://github.com/haehnpt/ | @haehnpt)
   - Sebastian Schmitt (https://github.com/sebschmitt/ | @sebschmitt_)
   
+## User Information
+
+Invoking game of life can be done with or without a parameter.
+
+- Without a parameter a random field of dead and alive cells is generated.
+- With a file path of a ".txt"-file, the content of the file is read as a field of cells,
+  e.g. ./gameOfLife input.txt
+  
 ## Screenshot
 
 ![A screenshot of the application running in console](https://raw.githubusercontent.com/DahlitzFlorian/game-of-life/master/screen.png)
