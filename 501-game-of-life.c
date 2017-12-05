@@ -79,6 +79,9 @@ int main(int argc, char * argv[]) {
     int oscillating_steps = 0;
     int oscillating = FALSE;
 
+    if(cells == NULL)
+        return EXIT_FAILURE;
+
 	for (int x = 0; x < DIFFERENCE_HISTORY_SIZE; x++)
 		*(difference_history + x) = GRAPH_LINES + 1;
 
@@ -158,6 +161,8 @@ int main(int argc, char * argv[]) {
         evolution_step((int *) &cells);
         generation++;
     }
+
+    free(cells);
 }
 
 /*
