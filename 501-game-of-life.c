@@ -72,7 +72,7 @@ int main(int argc, char * argv[]) {
     setlocale(LC_ALL, "");
 
 	int history[HISTORY_SIZE][XDIM][YDIM] = {};
-	int cells[XDIM][YDIM] = {};
+	int *cells = malloc(XDIM * YDIM * sizeof(int));
 	int difference_history[DIFFERENCE_HISTORY_SIZE];
 	int generation = 1;
     int oscillating_after = 0;
